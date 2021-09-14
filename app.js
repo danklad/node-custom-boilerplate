@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Blog = require('./models/blog');
+
+const blogRouter = require('./routes/blogRoutes');
 const port = process.env.port || 3000;
 
 const app = express();
@@ -74,56 +75,6 @@ app.get("/", (req, res) => {
 
 
 
-app.post('/blogs',(req,res)=>{
-
-    var newBlog = new Blog({
-        title: req.body.title,
-        content: req.body.body
-    });
-    newBlog.save()
-        .then((result)=>{
-            // console.log(result);
-            res.redirect('/blogs')
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-
-//     Blog.findOne({title:'eminem'})
-//         .then((result)=>{
-//             console.log(result);
-//         })
-//         .catch((err)=>{
-//             console.log(err);
-//         })
-    
-});
-
-app.get('/blogs/:id',(req,res)=>{
-    const id = req.params.id;
-    Blog.findById(id)
-        .then(result =>{
-        res.render('details',{titleExtension: req.body.title,blog: result });
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    
-})
-
-
-
-app.get("/blogs",(req,res)=>{
-    Blog.find()
-        .then((result) =>{
-            res.render('index',{titleExtension:'All Blogs',blogs: result});
-        
-            
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-});
 
 
 app.get("/about", (req, res) => {
@@ -133,12 +84,12 @@ app.get("/about", (req, res) => {
     });
 });
 
-app.get("/blog/create", (req, res) => {
 
-    res.render("create", {
-        titleExtension: "Create Blog"
-    })
-});
+
+//blog routes
+
+app.use('/blogs',blogRouter);
+
 
 
 
